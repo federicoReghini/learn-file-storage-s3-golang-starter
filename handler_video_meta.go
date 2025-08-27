@@ -90,8 +90,14 @@ func (cfg *apiConfig) handlerVideoGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	video, err := cfg.db.GetVideo(videoID)
+
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, "Couldn't get video", err)
+		return
+	}
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't generate presigned URL", err)
 		return
 	}
 
@@ -111,10 +117,12 @@ func (cfg *apiConfig) handlerVideosRetrieve(w http.ResponseWriter, r *http.Reque
 	}
 
 	videos, err := cfg.db.GetVideos(userID)
+
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't retrieve videos", err)
 		return
 	}
 
 	respondWithJSON(w, http.StatusOK, videos)
+
 }
